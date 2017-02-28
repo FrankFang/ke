@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    body{margin:0;}
+    *{box-sizing: border-box;}
+    *::before{box-sizing: border-box;}
+    *::after{box-sizing: border-box;}
+    button, input[type=button], input[type=submit]{
+      font-size: inherit;
+    }
+    body{
+      background: #F4F4F4;
+    } 
+
+    /* header */
+    header{
+      background: white;
+      box-shadow: 0 0 3px hsla(0,0%,0%,0.25);
+    }
+    header > .inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      padding: 10px 0;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1{
+      line-height: 44px;
+      margin: 0;
+    }
+
+    /* main */
+    main{
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .courseList{ list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 50px; }
+    .courseList > li{ background: white; width: 300px; height: 250px; margin-top: 50px; display: flex; justify-content: center;
+      align-items: center; font-size: 32px; padding: 1em; box-shadow: 0 0 3px hsla(0,0%,0%,0.25); border-radius: 2px;
+    }
+
+    /* sign up 注册*/
+    #signUpDialog{
+      display: none;
+    }
+    #signUpDialog:target{
+      display: block;
+      position: fixed;
+      background: white;
+      box-shadow: 0 0 10px hsla(0,0%,0%,0.5);
+      border-radius: 2px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      padding: 2em;
+      min-width: 20em;
+      min-height: 6em;
+    }
+
+    /*form*/
+    .form{
+      
+    }
+    .form .row{
+      margin: .5em;
+    }
+    .form .row> label:first-child{
+      width: 4em;
+      display: inline-block;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="inner">
+      <h1>KE 选择你的课程</h1>
+      <div class="actions">
+        <a href="#signUpDialog">注册</a>
+      </div>
+    </div>
+  </header>
+  <main>
+  </main>
+
+  <div class="dialog" id="signUpDialog">
+    <form class="form" id="signUpForm">
+      <div class="row">
+        <label>用户名</label> <input type="text">
+      </div>
+      <div class="row">
+        <label>密码</label> <input type="password">
+      </div>
+      <div class="actions">
+        <input type="submit" value="提交">
+        <a href="#">关闭</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function reqListener () {
+      var courses = JSON.parse(this.responseText);
+      var ul = document.createElement('ul')
+      ul.className="courseList"
+      for(var i=0; i<courses.length; i++){
+        var c = courses[i]
+        var li = document.createElement('li')
+        li.textContent = c.name
+        ul.appendChild(li)
+      }
+      document.querySelector('main').appendChild(ul)
+    }
+
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", reqListener);
+    oReq.open("GET", "./ke.json");
+    oReq.send();
+  </script>
+  <script src="//cdn1.lncld.net/static/js/2.1.2/av-min.js"></script>
+  <script>
+    var APP_ID = 'MDxfReLEvGuCyxLeXeJb5VF4-gzGzoHsz';
+    var APP_KEY = 'nuj7ybHdyv5uPzpDohE7DxvC';
+    AV.init({
+      appId: APP_ID,
+      appKey: APP_KEY
+    });
+  </script>
+  <script>
+    var form = document.querySelector('#signUpForm')
+form.addEventListener('submit', function(e){
+  e.preventDefault()
+
+  alert(1)
+  return
+    var username = $('#inputUsername').val();
+  var password = $('#inputPassword').val();
+  var email = $('inputEmail').val();
+
+  // LeanCloud - 注册
+  // https://leancloud.cn/docs/leanstorage_guide-js.html#注册
+  var user = new AV.User();
+  user.setUsername(username);
+  user.setPassword(password);
+  user.setEmail(email);
+  user.signUp().then(function (loginedUser) {
+    // 注册成功，跳转到商品 list 页面
+  }, (function (error) {
+      alert(JSON.stringify(error));
+  }));
+})
+  </script>
+
+</body>
+</html>
